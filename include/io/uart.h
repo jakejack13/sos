@@ -8,7 +8,7 @@
 void uart_init();
 void uart_writebyte(unsigned char c);
 void uart_writestring(const char *buffer);
-char uart_readbyte();
+unsigned char uart_readbyte();
 unsigned int uart_readstring(char *buffer, unsigned int size);
 
 #endif //_UART_H_
