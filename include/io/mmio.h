@@ -1,3 +1,7 @@
+/**
+ * Memory Mapped Input/Output
+ */
+
 #ifndef _MMIO_H_
 #define _MMIO_H_
 

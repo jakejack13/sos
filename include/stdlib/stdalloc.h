@@ -1,3 +1,7 @@
+/** 
+ * Library of functions for dynamically allocating memory 
+ */
+
 #ifndef _STDMEM_H_
 #define _STDMEM_H_
 
