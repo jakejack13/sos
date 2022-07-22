@@ -1,3 +1,6 @@
+#include "config.h"
+#if !HELLO_WORLD
+
 #include "stdlib/stdio.h"
 #include "stdlib/stdstr.h"
 
@@ -11,5 +14,20 @@ void main() {
         memset(buffer, (char) 0, BUFFER_SIZE);
         gets(buffer, BUFFER_SIZE);
         prints(buffer);
+        // printc(getc());
     }
 }
+
+#else
+
+#include "io/uart.h"
+
+void main() {
+    uart_init();
+    uart_writestring("Hello, world!\n");
+    while(1) {
+        uart_writebyte('a');
+    }
+}
+
+#endif
