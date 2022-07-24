@@ -1,10 +1,8 @@
+PROVIDE(__heap_size = 2 * 1024 * 1024);
 SECTIONS
 {
-    . = 0x10; /* Start heap at very top, ignoring NULL pointer */
-    . = ALIGN(16);
-    PROVIDE(_heap_start = .);
     . = 0x80000;     /* Kernel load address for AArch64 */
-    PROVIDE(_stack_start = .); /* Stack grows down from kernel code */
+    PROVIDE(__stack_start = .); /* Stack grows down from kernel code */
     .text : { KEEP(*(.text.boot)) *(.text .text.* .gnu.linkonce.t*) }
     .rodata : { *(.rodata .rodata.* .gnu.linkonce.r*) }
     PROVIDE(_data = .);
@@ -15,6 +13,13 @@ SECTIONS
         *(.bss .bss.*)
         *(COMMON)
         __bss_end = .;
+    }
+    .heap : {
+        . = ALIGN(16);
+        PROVIDE(__heap_start = .);
+        *(.heap)
+        . = __heap_start + __heap_size;
+        __heap_end = .;
     }
     _end = .;
 

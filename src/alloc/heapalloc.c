@@ -3,12 +3,11 @@
 static struct allocator heap_allocator;
 
 /** The start of the heap as declared in the linker script */
-extern char _heap_start;
-
+extern char __heap_start;
 /** The heap, in the form of a char array */
-static char *heap = &_heap_start;
+static char *heap = &__heap_start;
 /** The size of the heap */
-static size_t heap_size;
+extern size_t __heap_size;
 
 /** Initializes the heap allocator */
 static void heap_init() {

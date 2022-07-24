@@ -24,7 +24,15 @@ _start:
     sub     w2, w2, #1
     cbnz    w2, 3b               // Loop if non-zero
 
+    // Clean heap (in case of residual bootloader symbols)
+    ldr     x1, =__heap_start   // Start address
+    ldr     w2, =__heap_size    // Size of the section
+4:  cbz     w2, 5f              // Quit loop if zero
+    str     xzr, [x1], #8
+    sub     w2, w2, #1
+    cbnz    w2, 4b              // Loop is non-zero
+
     // Jump to our main() routine in C (make sure it doesn't return)
-4:  bl      main
+5:  bl      main
     // In case it does return, halt the master core too
     b       1b
