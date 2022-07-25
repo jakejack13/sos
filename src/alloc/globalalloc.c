@@ -1,9 +1,11 @@
 #include "alloc/alloc.h"
 
+/** The global allocator */
 static struct allocator global_allocator;
 
 #define POOL_SIZE 16 * 1024 * 1024
 
+/** The pool of memory that can be accessed by the global allocator */
 static char pool[POOL_SIZE];
 
 /** Initializes the global allocator */

@@ -3,6 +3,7 @@
 #include "alloc/alloc.h"
 #include "config.h"
 
+/** The currently used standard allocator */
 static struct allocator *allocator;
 
 void stdalloc_init() {
