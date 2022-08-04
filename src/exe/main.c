@@ -8,6 +8,7 @@
 void main() {
     #if HELLO_WORLD
     fb_init();
+    fb_paint_screen(BLACK);
     fb_draw_string(100,100,"Hello, world!", default_font);
     #else
     stdio_init();

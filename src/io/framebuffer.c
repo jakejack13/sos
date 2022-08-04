@@ -2,6 +2,8 @@
 
 #include "io/mmio.h"
 
+//MAILBOX
+
 // The buffer must be 16-byte aligned as only the upper 28 bits of the address can be passed via the mailbox
 volatile unsigned int __attribute__((aligned(16))) mbox[36];
 
@@ -70,8 +72,10 @@ static unsigned int mbox_call(unsigned char ch) {
     return 0;
 }
 
+//FRAMEBUFFER
+
 unsigned int width, height, pitch, isrgb;
-unsigned char *fb;
+static unsigned char *fb;
 
 void fb_init() {
     mbox[0] = 35*4; // Length of message in bytes
@@ -129,79 +133,9 @@ void fb_init() {
     }
 }
 
-void fb_draw_pixel(int x, int y, unsigned char color) {
+void fb_draw_pixel(int x, int y, unsigned int color) {
     int offs = (y * pitch) + (x * 4);
     *((unsigned int*)(fb + offs)) = color;
-}
-
-void fb_draw_rect(int x1, int y1, int x2, int y2, unsigned char color, int fill) {
-    int y=y1;
-
-    while (y <= y2) {
-        int x=x1;
-        while (x <= x2) {
-            if ((x == x1 || x == x2) || (y == y1 || y == y2)) fb_draw_pixel(x, y, color);
-            else if (fill) fb_draw_pixel(x, y, BLACK);
-            x++;
-        }
-        y++;
-    }
-}
-
-void fb_draw_line(int x1, int y1, int x2, int y2, unsigned char color)  
-{  
-    int dx, dy, p, x, y;
-
-    dx = x2-x1;
-    dy = y2-y1;
-    x = x1;
-    y = y1;
-    p = 2*dy-dx;
-
-    while (x<x2) {
-       if (p >= 0) {
-          fb_draw_pixel(x,y,color);
-          y++;
-          p = p+2*dy-2*dx;
-       } else {
-          fb_draw_pixel(x,y,color);
-          p = p+2*dy;
-       }
-       x++;
-    }
-}
-
-void fb_draw_circle(int x0, int y0, int radius, unsigned char color, int fill){
-    int x = radius;
-    int y = 0;
-    int err = 0;
- 
-    while (x >= y) {
-	if (fill) {
-	    fb_draw_line(x0 - y, y0 + x, x0 + y, y0 + x, BLACK);
-	    fb_draw_line(x0 - x, y0 + y, x0 + x, y0 + y, BLACK);
-	    fb_draw_line(x0 - x, y0 - y, x0 + x, y0 - y, BLACK);
-	    fb_draw_line(x0 - y, y0 - x, x0 + y, y0 - x, BLACK);
-	}
-	fb_draw_pixel(x0 - y, y0 + x, color);
-	fb_draw_pixel(x0 + y, y0 + x, color);
-	fb_draw_pixel(x0 - x, y0 + y, color);
-    fb_draw_pixel(x0 + x, y0 + y, color);
-	fb_draw_pixel(x0 - x, y0 - y, color);
-	fb_draw_pixel(x0 + x, y0 - y, color);
-	fb_draw_pixel(x0 - y, y0 - x, color);
-	fb_draw_pixel(x0 + y, y0 - x, color);
-
-	if (err <= 0) {
-	    y += 1;
-	    err += 2*y + 1;
-	}
- 
-	if (err > 0) {
-	    x -= 1;
-	    err -= 2*x + 1;
-	}
-    }
 }
 
 void fb_draw_char(int x, int y, char c, struct font font) {
@@ -210,8 +144,8 @@ void fb_draw_char(int x, int y, char c, struct font font) {
 
     for (int i=0;i<font.height;i++) {
         for (int j=0;j<font.width;j++) {
-            unsigned char mask = 1 << j;
-            unsigned char col = (*glyph & mask) ? font.color : BLACK;
+            unsigned int mask = 1 << j;
+            unsigned int col = (*glyph & mask) ? font.fore_color : font.back_color;
 
             fb_draw_pixel(x+j, y+i, col);
         }
@@ -230,5 +164,13 @@ void fb_draw_string(int x, int y, const char *s, struct font font) {
             x += font.width;
         }
        s++;
+    }
+}
+
+void fb_paint_screen(unsigned int color) {
+    for (unsigned int i = 0; i < width; i++) {
+        for (unsigned int j = 0; j < height; j++) {
+            fb_draw_pixel(i,j,color);
+        }
     }
 }
