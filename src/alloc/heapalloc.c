@@ -7,8 +7,10 @@ static struct allocator heap_allocator;
 extern char __heap_start;
 /** The heap, in the form of a char array */
 static char *heap = &__heap_start;
+/** The locaton of the size of the heap */
+extern char *__heap_size;
 /** The size of the heap */
-extern size_t __heap_size;
+extern long __heap_size_i = (long)&__heap_size;
 
 /** Initializes the heap allocator */
 static void heap_init() {
