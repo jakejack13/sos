@@ -108,13 +108,18 @@ static void *global_malloc(size_t size)
 /** Resizes a chunk of memory in global memory previously allocated by malloc */
 static void *global_realloc(void *p, size_t size)
 {
-  if (!global_free(p))
-    return NULL;
+  struct Node *old_head = find_element(p);
+  if (!old_head->head)
+    return NULL;                      // Check for invalid pointer
+  int old_size = old_head->allocated; // Save allocated size
+  global_free(p);
+
   struct Node *head = find_space(size);
   switch_state(head, size);
-  for (int i = 0; i < size; i++)
+  for (int i = 0; i < old_size; i++)
   {
-    (head + i)->pool_element = p + i;
+    pool[i + head->index] = pool[i + old_head->index];
+    pool[i + old_head->index] = NULL; // Clear
   }
 
   return head;
