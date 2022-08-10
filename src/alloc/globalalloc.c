@@ -92,7 +92,7 @@ static void *global_realloc(void *p, size_t size) {
         (head+i)-> pool_element = p+i;
     }
     
-
+    return head;
 }
 
 /** Frees a chunk of memory in global memory previous allocated by malloc */
