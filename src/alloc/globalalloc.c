@@ -8,9 +8,9 @@ static struct allocator global_allocator;
 /** Pool node for metadata */
 struct Node {
   char*   pool_element;
+  int     allocated;  // Should be -1 if node is not a head. 
   bool    used;
   bool    head;
-  int     allocated;  // Should be -1 if node is not a head. 
 };
 
 /** Pool of metadata that maps to the pool array */
@@ -43,9 +43,7 @@ static struct Node *find_element(void *p) {
 }
 
 /** Flips a chunk of data's "used" state to the opposite */
-static void switch_state(void *p, size_t size) {
-    struct Node *element = find_element(p);
-
+static void switch_state(struct Node *element, size_t size) {
     // Set data to opposite state
     for(int i = 0; i < size; i++) {
         if(element[i].used) element[i].used = false;
@@ -55,7 +53,23 @@ static void switch_state(void *p, size_t size) {
 
 /** Allocates a chunk of memory of the given size in global memory */
 static void *global_malloc(size_t size) {
+    int index = 0;
+    while(index < POOL_SIZE) {
+        bool fits = true;
+        for(int i = 0; i < size; i++) {
+            if(!(metadata+i)->used) {
+                fits = false;
+                index += i;
+                break;
+            }
+        }
+        if(fits) {
+            
+        }
 
+    }
+
+    return NULL;
 }
 
 /** Resizes a chunk of memory in global memory previously allocated by malloc */
@@ -68,7 +82,7 @@ static int global_free(void *p) {
     struct Node* element = find_element(p);
     if (!element->head) return 0;
     else {
-        switch_state(p, element->allocated);
+        switch_state(element, element->allocated);
         return 1;
     }
 }
