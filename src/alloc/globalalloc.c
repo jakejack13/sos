@@ -27,9 +27,8 @@ static void global_init() {
     }
 }
 
-// ** Flips a chunk of data's "used" state to the opposite */
-static void switch_state(void *p, size_t size) {
-    // Find corresponding element in metadata
+/** Finds corresponding metadata to a given pool element */
+static struct Node *find_element(void *p) {
     struct Node *element;
     for(int i = 0; i < POOL_SIZE; i++) {
         if(metadata[i].pool_element == p) {
@@ -37,6 +36,14 @@ static void switch_state(void *p, size_t size) {
             break;
         }
     }
+
+    return element;
+}
+
+/** Flips a chunk of data's "used" state to the opposite */
+static void switch_state(void *p, size_t size) {
+    struct Node *element = find_element(p);
+
     // Set data to opposite state
     for(int i = 0; i < size; i++) {
         if(element[i].used) element[i].used = false;
