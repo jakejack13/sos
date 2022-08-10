@@ -12,6 +12,9 @@ struct queue {
 /** Initializes a new queue */
 void queue_init(struct queue *q);
 
+/** Frees the queue from memory */
+void queue_free(struct queue *q);
+
 /** Returns true if queue is empty, false otherwise */
 bool queue_empty(struct queue *q);
 
