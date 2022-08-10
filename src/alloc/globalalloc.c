@@ -64,7 +64,9 @@ static void *global_malloc(size_t size) {
             }
         }
         if(fits) {
-            
+            switch_state(metadata+index, size);
+            (metadata+index)->head = true;
+            return (metadata+index)->pool_element;
         }
 
     }
