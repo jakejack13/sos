@@ -10,7 +10,7 @@ static char *heap = &__heap_start;
 /** The locaton of the size of the heap */
 extern char *__heap_size;
 /** The size of the heap */
-extern long __heap_size_i = (long)&__heap_size;
+static long __heap_size_i = (long)&__heap_size;
 
 /** Initializes the heap allocator */
 static void heap_init() {
