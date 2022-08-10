@@ -51,32 +51,34 @@ static void switch_state(struct Node *element, size_t size) {
     }
 }
 
-/** Allocates a chunk of memory of the given size in global memory */
-static void *global_malloc(size_t size) {
+/** Finds a chunk in the pool that satisfies the size requirement. Returns the head of the chunk */
+static struct Node *find_space(size_t size) {
     int index = 0;
+    bool fits = true;
     while(index < POOL_SIZE) {
-        bool fits = true;
         for(int i = 0; i < size; i++) {
             if(!(metadata+i)->used) {
                 fits = false;
-                index += i;
+                index += (i + (metadata+i)->allocated); // Skip the allocated block to save traversal time :rofl:
                 break;
             }
         }
-        if(fits) {
-            switch_state(metadata+index, size);
-            (metadata+index)->head = true;
-            return (metadata+index)->pool_element;
-        }
+
+        if(fits) return (metadata+index);
 
     }
-
     return NULL;
+}
+
+/** Allocates a chunk of memory of the given size in global memory */
+static void *global_malloc(size_t size) {
+    struct Node *head = find_space(size);
+    return head->pool_element;
 }
 
 /** Resizes a chunk of memory in global memory previously allocated by malloc */
 static void *global_realloc(void *p, size_t size) {
-    return NULL;
+
 }
 
 /** Frees a chunk of memory in global memory previous allocated by malloc */
