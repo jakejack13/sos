@@ -56,16 +56,17 @@ static void switch_state(struct Node *element, size_t size) {
 /** Finds a chunk in the pool that satisfies the size requirement. Returns the head of the chunk */
 static struct Node *find_space(size_t size) {
     int index = 0;
-    bool fits = true;
-    while(index < POOL_SIZE) {
+    int counter = 0;
+    while(counter < POOL_SIZE) {
+        bool fits = true;
         for(int i = 0; i < size; i++) {
-            if((metadata+i)->used) {
+            if((metadata+index)->used) {
                 fits = false;
-                index += (i + (metadata+i)->allocated); // Skip the allocated block to save traversal time :rofl:
+                index += (metadata+index)->allocated; // Skip the allocated block to save traversal time :rofl:
                 break;
             }
         }
-
+        counter++;
         if(fits) return (metadata+index);
     }
     return NULL;
