@@ -65,7 +65,6 @@ static struct Node *find_space(size_t size) {
         }
 
         if(fits) return (metadata+index);
-
     }
     return NULL;
 }
@@ -73,6 +72,8 @@ static struct Node *find_space(size_t size) {
 /** Allocates a chunk of memory of the given size in global memory */
 static void *global_malloc(size_t size) {
     struct Node *head = find_space(size);
+    head->allocated = size;
+    head->head = true;
     return head->pool_element;
 }
 
