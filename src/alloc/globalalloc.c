@@ -9,6 +9,7 @@ static struct allocator global_allocator;
 struct Node {
   char*   pool_element;
   bool    used;
+  bool    head;
 };
 
 /** Pool of metadata that maps to the pool array */
@@ -19,7 +20,11 @@ static char pool[POOL_SIZE];
 
 /** Initializes the global allocator */
 static void global_init() {
-
+    for(int i = 0; i < POOL_SIZE; i++) {
+        metadata[i].pool_element = &pool[i];
+        metadata[i].used = false;
+        metadata[i].head = false;
+    }
 }
 
 /** Allocates a chunk of memory of the given size in global memory */
