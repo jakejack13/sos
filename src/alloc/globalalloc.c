@@ -10,6 +10,7 @@ struct Node {
   char*   pool_element;
   bool    used;
   bool    head;
+  int     allocated;  // Should be -1 if node is not a head. 
 };
 
 /** Pool of metadata that maps to the pool array */
@@ -24,6 +25,7 @@ static void global_init() {
         metadata[i].pool_element = &pool[i];
         metadata[i].used = false;
         metadata[i].head = false;
+        metadata[i].allocated = -1;
     }
 }
 
@@ -63,7 +65,8 @@ static void *global_realloc(void *p, size_t size) {
 
 /** Frees a chunk of memory in global memory previous allocated by malloc */
 static int global_free(void *p) {
-    return -1;
+    if (!find_element(p)->head) return 0;
+
 }
 
 struct allocator *global_alloc() {
