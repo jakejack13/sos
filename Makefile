@@ -4,7 +4,7 @@ COFILES = $(CFILES:.c=.co)
 AOFILES = $(SFILES:.S=.ao)
 LLVMPATH = /opt/homebrew/opt/llvm/bin
 CLANGFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib -mcpu=cortex-a72+nosimd
-CPPFLAGS = -Iinclude
+CPPFLAGS = -Iinclude -I.
 
 all: clean kernel8.img
 
@@ -19,4 +19,4 @@ kernel8.img: $(COFILES) $(AOFILES)
 	$(LLVMPATH)/llvm-objcopy -O binary kernel8.elf kernel8.img
 
 clean:
-	/bin/rm */*/*.elf */*/*.co */*/*.ao */*/*.img > /dev/null 2> /dev/null || true
+	/bin/rm *.elf */*/*.co */*/*.ao *.img > /dev/null 2> /dev/null || true

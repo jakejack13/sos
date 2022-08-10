@@ -51,15 +51,16 @@ void uart_writebyte(unsigned char c) {
 }
 
 void uart_writestring(const char *buffer) {
-    while (*buffer) {
-       if (*buffer == '\n') uart_writebyte('\r');
-       uart_writebyte(*buffer++);
+    char c;
+    while (*buffer != 0) {
+        uart_writebyte((unsigned char) *buffer);
+        buffer++;
     }
 }
 
-char uart_readbyte() {
+unsigned char uart_readbyte() {
     while (!uart_isreadbyteready());
-    return (char) mmio_read(AUX_MU_IO_REG);
+    return (unsigned char) mmio_read(AUX_MU_IO_REG);
 }
 
 unsigned int uart_readstring(char *buffer, unsigned int size) {
