@@ -27,9 +27,26 @@ static void global_init() {
     }
 }
 
+// ** Flips a chunk of data's "used" state to the opposite */
+static void switch_state(void *p, size_t size) {
+    // Find corresponding element in metadata
+    struct Node *element;
+    for(int i = 0; i < POOL_SIZE; i++) {
+        if(metadata[i].pool_element == p) {
+            element = metadata+i;
+            break;
+        }
+    }
+    // Set data to opposite state
+    for(int i = 0; i < size; i++) {
+        if(element[i].used) element[i].used = false;
+        else element[i].used = true;
+    }
+}
+
 /** Allocates a chunk of memory of the given size in global memory */
 static void *global_malloc(size_t size) {
-    return NULL;
+
 }
 
 /** Resizes a chunk of memory in global memory previously allocated by malloc */
