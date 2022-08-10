@@ -77,7 +77,9 @@ static void *global_malloc(size_t size) {
     head->allocated = size;
     head->head = true;
     switch_state(head, size);
-
+    for(int i = 0; i < size; i++) {
+        (head+i)->pool_element = &pool[(head+i)->index]; // Link metadata node to pool element
+    }
     return head->pool_element;
 }
 
@@ -87,9 +89,9 @@ static void *global_realloc(void *p, size_t size) {
     struct Node *head = find_space(size);
     switch_state(head, size);
     for(int i = 0; i < size; i++) {
-        
+        (head+i)-> pool_element = p+i;
     }
-
+    
 
 }
 
