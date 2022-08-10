@@ -46,8 +46,8 @@ static struct Node *find_element(void *p) {
 static void switch_state(struct Node *element, size_t size) {
     // Set data to opposite state
     for(int i = 0; i < size; i++) {
-        if(element[i].used) element[i].used = false;
-        else element[i].used = true;
+        if((element+i)->used) (element+i)->used = false;
+        else (element+i)->used = true;
     }
 }
 
