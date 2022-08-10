@@ -8,7 +8,7 @@ static struct allocator global_allocator;
 /** Pool node for metadata */
 struct Node {
   char*   pool_element;
-  int     allocated;  // Should be -1 if node is not a head. 
+  int     allocated;  // Should be -1 if node is not a head.
   int     index;
   bool    used;
   bool    head;
@@ -77,9 +77,7 @@ static void *global_malloc(size_t size) {
     head->allocated = size;
     head->head = true;
     switch_state(head, size);
-    for(int i = 0; i < size; i++) {
-        (head+i)->pool_element = &pool[(head+i)->index]; // Link metadata node to pool element
-    }
+
     return head->pool_element;
 }
 
@@ -91,7 +89,7 @@ static void *global_realloc(void *p, size_t size) {
     for(int i = 0; i < size; i++) {
         (head+i)-> pool_element = p+i;
     }
-    
+
     return head;
 }
 
