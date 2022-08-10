@@ -9,6 +9,7 @@ static struct allocator global_allocator;
 struct Node {
   char*   pool_element;
   int     allocated;  // Should be -1 if node is not a head. 
+  int     index;
   bool    used;
   bool    head;
 };
@@ -26,6 +27,7 @@ static void global_init() {
         metadata[i].used = false;
         metadata[i].head = false;
         metadata[i].allocated = -1;
+        metadata[i].index = i;
     }
 }
 
@@ -57,7 +59,7 @@ static struct Node *find_space(size_t size) {
     bool fits = true;
     while(index < POOL_SIZE) {
         for(int i = 0; i < size; i++) {
-            if(!(metadata+i)->used) {
+            if((metadata+i)->used) {
                 fits = false;
                 index += (i + (metadata+i)->allocated); // Skip the allocated block to save traversal time :rofl:
                 break;
@@ -74,11 +76,20 @@ static void *global_malloc(size_t size) {
     struct Node *head = find_space(size);
     head->allocated = size;
     head->head = true;
+    switch_state(head, size);
+
     return head->pool_element;
 }
 
 /** Resizes a chunk of memory in global memory previously allocated by malloc */
 static void *global_realloc(void *p, size_t size) {
+    if(!global_free(p)) return NULL;
+    struct Node *head = find_space(size);
+    switch_state(head, size);
+    for(int i = 0; i < size; i++) {
+        
+    }
+
 
 }
 
@@ -87,6 +98,7 @@ static int global_free(void *p) {
     struct Node* element = find_element(p);
     if (!element->head) return 0;
     else {
+        element->head = false;
         switch_state(element, element->allocated);
         return 1;
     }
