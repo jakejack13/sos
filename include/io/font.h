@@ -3,8 +3,8 @@
 #define _FONT_H_
 
 enum screen_colors {
-    WHITE = 0xFFFFFFFF,
-    BLACK = 0x00000000,
+    WHITE = (unsigned int) 0x00FFFFFF,
+    BLACK = (unsigned int) 0x00000000,
 };
 
 /** Data structure for holding font data */
@@ -21,8 +21,10 @@ struct font {
     const unsigned int width;
     /** Height of each glyph */
     const unsigned int height;
-    /** Color of glyphs */
-    const unsigned int color;
+    /** Foreground color of glyphs */
+    const unsigned int fore_color;
+    /** Background color of glphs */
+    const unsigned int back_color;
 };
 
 extern struct font default_font;

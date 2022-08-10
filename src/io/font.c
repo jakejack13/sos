@@ -240,5 +240,6 @@ struct font default_font = {
     .bpl = DEFAULT_FONT_BPL,
     .width = DEFAULT_FONT_WIDTH,
     .height = DEFAULT_FONT_HEIGHT,
-    .color = WHITE
+    .fore_color = WHITE,
+    .back_color = BLACK,
 };
