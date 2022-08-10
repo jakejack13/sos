@@ -1,3 +1,7 @@
+/** 
+ * Library of functions for standard types and constants
+ */
+
 #ifndef _STDTYPES_H_
 #define _STDTYPES_H_
 

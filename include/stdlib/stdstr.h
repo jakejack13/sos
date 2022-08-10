@@ -1,3 +1,7 @@
+/** 
+ * Library of functions for memory manipulation 
+ */
+
 #ifndef _STDSTR_H_
 #define _STDSTR_H_
 

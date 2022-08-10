@@ -1,3 +1,7 @@
+/** 
+ * Interface to io streams
+ */
+
 #ifndef _IO_H_
 #define _IO_H_
 
