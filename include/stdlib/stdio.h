@@ -1,10 +1,15 @@
 #ifndef _STDIO_H_
 #define _STDIO_H_
 
+/** Initializes the standard io */
 void stdio_init();
-void prints(const char *string);
+/** Prints the string to stdout */
+void prints(const char *s);
+/** Prints the character to stdout */
 void printc(char c);
+/** Gets a string from stdin, limited by the given length */
 void gets(char *buffer, unsigned int length);
+/** Gets a character from stdin */
 char getc();
 
 #endif //_STDIO_H_

@@ -2,6 +2,9 @@
 
 #include "io/mmio.h"
 #include "io/gpio.h"
+#include "io/io.h"
+
+static struct iostream uart_io;
 
 enum aux_addresses {
     AUX_BASE        = PERIPHERAL_BASE + 0x215000,
@@ -45,32 +48,39 @@ static unsigned int uart_isreadbyteready() {
     return mmio_read(AUX_MU_LSR_REG) & 0x10;
 }
 
-void uart_writebyte(unsigned char c) {
+void uart_writebyte(char c) {
     while (!uart_iswritebyteready()); 
     mmio_write(AUX_MU_IO_REG, (unsigned int)c);
 }
 
 void uart_writestring(const char *buffer) {
-    char c;
     while (*buffer != 0) {
-        uart_writebyte((unsigned char) *buffer);
+        uart_writebyte(*buffer);
         buffer++;
     }
 }
 
-unsigned char uart_readbyte() {
+char uart_readbyte() {
     while (!uart_isreadbyteready());
-    return (unsigned char) mmio_read(AUX_MU_IO_REG);
+    return (char) mmio_read(AUX_MU_IO_REG);
 }
 
-unsigned int uart_readstring(char *buffer, unsigned int size) {
+void uart_readstring(char *buffer, unsigned int size) {
     char c;
     for (unsigned int i = 0; i < size; i++) {
         c = uart_readbyte();
         if (c == '\n' || c == '\r') {
             buffer[i] = '\0';
-            return i;
+            return;
         } else buffer[i] = uart_readbyte();
     }
-    return size;
+}
+
+struct iostream *uart_iostream() {
+    uart_io.init = uart_init;
+    uart_io.getc = uart_readbyte;
+    uart_io.gets = uart_readstring;
+    uart_io.printc = uart_writebyte;
+    uart_io.prints = uart_writestring;
+    return &uart_io;
 }

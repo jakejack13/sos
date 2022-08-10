@@ -1,35 +1,30 @@
 #include "stdlib/stdio.h"
 
 #include "config.h"
-#include "io/uart.h"
+#include "io/io.h"
 #include "stdlib/stdstr.h"
 
+static struct iostream *iostream;
+
 void stdio_init() {
-    #if UART_IO
-    uart_init();
+    #if CONFIG_UART_IO
+    iostream = uart_iostream();
     #endif
+    (iostream->init)();
 }
 
-void prints(const char *string) {
-    #if UART_IO
-    uart_writestring(string);
-    #endif
+void prints(const char *s) {
+    (iostream->prints)(s);
 }
 
 void printc(char c) {
-    #if UART_IO
-    uart_writebyte((unsigned char) c);
-    #endif
+    (iostream->printc)(c);
 }
 
 void gets(char *buffer, unsigned int length) {
-    #if UART_IO
-    uart_readstring(buffer, length); 
-    #endif
+    (iostream->gets)(buffer, length);
 }
 
 char getc() {
-    #if UART_IO
-    return (char) uart_readbyte();
-    #endif
+    return (iostream->getc)();
 }
