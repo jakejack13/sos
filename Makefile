@@ -3,19 +3,20 @@ SFILES = $(wildcard */*/*.S)
 COFILES = $(CFILES:.c=.co)
 AOFILES = $(SFILES:.S=.ao)
 LLVMPATH = /opt/homebrew/opt/llvm/bin
-CLANGFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib -mcpu=cortex-a72+nosimd
-CPPFLAGS = -Iinclude -I.
+CLANGFLAGS = --target=aarch64-elf -Wall -O2 -ffreestanding -nostdinc -nostdlib -mcpu=cortex-a72+nosimd
+CPPFLAGS = -Iinclude
+LDFLAGS = -m aarch64elf -nostdlib -T link.ld --strip-all
 
 all: clean kernel8.img
 
-*/*/%.ao: src/*/%.S
-	$(LLVMPATH)/clang --target=aarch64-elf $(CLANGFLAGS) $(CPPFLAGS) -c $< -o $@
+*/*/%.ao: src/*/%.S include/*/*.h
+	$(LLVMPATH)/clang $(CLANGFLAGS) $(CPPFLAGS) -c $< -o $@
 
-*/*/%.co: src/*/%.c
-	$(LLVMPATH)/clang --target=aarch64-elf $(CLANGFLAGS) $(CPPFLAGS) -c $< -o $@
+*/*/%.co: src/*/%.c include/*/*.h
+	$(LLVMPATH)/clang $(CLANGFLAGS) $(CPPFLAGS) -c $< -o $@
 
 kernel8.img: $(COFILES) $(AOFILES)
-	$(LLVMPATH)/ld.lld -m aarch64elf -nostdlib $(COFILES) $(AOFILES) -T link.ld -o kernel8.elf
+	$(LLVMPATH)/ld.lld $(LDFLAGS) $(COFILES) $(AOFILES) -o kernel8.elf
 	$(LLVMPATH)/llvm-objcopy -O binary kernel8.elf kernel8.img
 
 clean:

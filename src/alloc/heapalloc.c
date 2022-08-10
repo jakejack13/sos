@@ -1,5 +1,6 @@
 #include "alloc/alloc.h"
 
+/** The heap allocator */
 static struct allocator heap_allocator;
 
 /** The start of the heap as declared in the linker script */

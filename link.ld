@@ -14,7 +14,7 @@ SECTIONS
         *(COMMON)
         __bss_end = .;
     }
-    .heap : {
+    .heap (NOLOAD) : {
         . = ALIGN(16);
         PROVIDE(__heap_start = .);
         *(.heap)

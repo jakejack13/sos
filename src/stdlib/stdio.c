@@ -4,6 +4,7 @@
 #include "io/io.h"
 #include "stdlib/stdstr.h"
 
+/** The currently used standard iostream */
 static struct iostream *iostream;
 
 void stdio_init() {
