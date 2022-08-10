@@ -65,8 +65,12 @@ static void *global_realloc(void *p, size_t size) {
 
 /** Frees a chunk of memory in global memory previous allocated by malloc */
 static int global_free(void *p) {
-    if (!find_element(p)->head) return 0;
-
+    struct Node* element = find_element(p);
+    if (!element->head) return 0;
+    else {
+        switch_state(p, element->allocated);
+        return 1;
+    }
 }
 
 struct allocator *global_alloc() {
