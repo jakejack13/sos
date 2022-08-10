@@ -5,12 +5,21 @@ static struct allocator global_allocator;
 
 #define POOL_SIZE 16 * 1024 * 1024
 
+/** Pool node for metadata */
+struct Node {
+  char*   pool_element;
+  bool    used;
+};
+
+/** Pool of metadata that maps to the pool array */
+static struct Node metadata[POOL_SIZE];
+
 /** The pool of memory that can be accessed by the global allocator */
 static char pool[POOL_SIZE];
 
 /** Initializes the global allocator */
 static void global_init() {
-    
+
 }
 
 /** Allocates a chunk of memory of the given size in global memory */
