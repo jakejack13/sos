@@ -45,7 +45,7 @@ static unsigned int uart_iswritebyteready() {
 }
 
 static unsigned int uart_isreadbyteready() {
-    return mmio_read(AUX_MU_LSR_REG) & 0x10;
+    return mmio_read(AUX_MU_LSR_REG) & 0x01;
 }
 
 void uart_writebyte(char c) {
