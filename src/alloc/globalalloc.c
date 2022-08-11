@@ -5,17 +5,22 @@ static struct allocator global_allocator;
 
 #define POOL_SIZE 16 * 1024 * 1024
 
-/** Pool node for metadata */
+/** Represents a node of metadata that maps to the corresponding element in the pool array */
 struct Node
 {
+  /** The pointer to the corresponding element in the pool array */
   char *pool_element;
-  int allocated; // Should be -1 if node is not a head.
+  /** The amount of space allocated for the appropriate chunk. Should only be used by head nodes. Default value is -1 if not a head */
+  int allocated; 
+  /** The index of the corresponding element in the pool array */
   int index;
+  /** Determines whether the current node is currently allocated or not */
   bool used;
+  /** Determines whether the current node is the first element of a chunk of allocated memory */
   bool head;
 };
 
-/** Pool of metadata that maps to the pool array */
+/** The pool of metadata nodes that maps to the pool array */
 static struct Node metadata[POOL_SIZE];
 
 /** The pool of memory that can be accessed by the global allocator */
@@ -34,7 +39,7 @@ static void global_init()
   }
 }
 
-/** Finds corresponding metadata to a given pool element */
+/** Finds corresponding metadata node to a given pool element */
 static struct Node *find_element(void *p)
 {
   struct Node *element = NULL;
