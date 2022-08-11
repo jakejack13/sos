@@ -6,7 +6,10 @@
 
 /** Data structure for a generic FIFO queue */
 struct queue {
-    // TODO
+    int front;
+    int back;
+    int capacity;
+    int size;
 };
 
 /** Initializes a new queue */
