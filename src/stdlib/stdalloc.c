@@ -2,7 +2,7 @@
 
 #include "alloc/heapalloc.h"
 
-/** The currently used standard allocator */
+/** The heap state for the kernel heap */
 static struct heap_state kernel_heap;
 
 struct heap_state *current_heap;
