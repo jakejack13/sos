@@ -8,7 +8,6 @@
 struct queue {
     int front;
     int back;
-    int capacity;
     int size;
 };
 
