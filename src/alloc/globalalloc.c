@@ -98,6 +98,7 @@ static struct Node *find_space(size_t size)
 static int global_free(void *p)
 {
   struct Node *element = find_element(p);
+  // if(element == NULL) return
   if (!element->head)
     return 0;
   else
@@ -133,7 +134,7 @@ static void *global_realloc(void *p, size_t size)
   for (int i = 0; i < old_size; i++)
   {
     pool[i + head->index] = pool[i + old_head->index];
-    pool[i + old_head->index] = NULL; // Clear
+    pool[i + old_head->index] = '\0'; // Clear
   }
 
   return head;
