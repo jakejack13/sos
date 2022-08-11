@@ -11,7 +11,7 @@ struct Node
   /** The pointer to the corresponding element in the pool array */
   char *pool_element;
   /** The amount of space allocated for the appropriate chunk. Should only be used by head nodes. Default value is -1 if not a head */
-  int allocated; 
+  int allocated;
   /** The index of the corresponding element in the pool array */
   int index;
   /** Determines whether the current node is currently allocated or not */
@@ -103,7 +103,8 @@ static struct Node *find_space(size_t size)
 static int global_free(void *p)
 {
   struct Node *element = find_element(p);
-  if(element == NULL) return NULL;
+  if (element == NULL)
+    return NULL;
   if (!element->head)
     return 0;
   else
@@ -118,7 +119,8 @@ static int global_free(void *p)
 static void *global_malloc(size_t size)
 {
   struct Node *head = find_space(size);
-  if(head == NULL) return NULL;
+  if (head == NULL)
+    return NULL;
   head->allocated = size;
   head->head = true;
   switch_state(head, size);
@@ -136,17 +138,18 @@ static void *global_realloc(void *p, size_t size)
   global_free(p);
 
   struct Node *head = find_space(size);
-  if(head == NULL) return NULL;
+  if (head == NULL)
+    return NULL;
   switch_state(head, size);
+  head->allocated = size;
+  head->head = true;
   for (int i = 0; i < old_size; i++)
   {
     pool[i + head->index] = pool[i + old_head->index];
-    pool[i + old_head->index] = '\0'; // Clear
   }
 
-  return head;
+  return head->pool_element;
 }
-
 
 struct allocator *global_alloc()
 {
