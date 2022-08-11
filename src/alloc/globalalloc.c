@@ -94,6 +94,20 @@ static struct Node *find_space(size_t size)
   return NULL;
 }
 
+/** Frees a chunk of memory in global memory previous allocated by malloc */
+static int global_free(void *p)
+{
+  struct Node *element = find_element(p);
+  if (!element->head)
+    return 0;
+  else
+  {
+    element->head = false;
+    switch_state(element, element->allocated);
+    return 1;
+  }
+}
+
 /** Allocates a chunk of memory of the given size in global memory */
 static void *global_malloc(size_t size)
 {
@@ -125,19 +139,6 @@ static void *global_realloc(void *p, size_t size)
   return head;
 }
 
-/** Frees a chunk of memory in global memory previous allocated by malloc */
-static int global_free(void *p)
-{
-  struct Node *element = find_element(p);
-  if (!element->head)
-    return 0;
-  else
-  {
-    element->head = false;
-    switch_state(element, element->allocated);
-    return 1;
-  }
-}
 
 struct allocator *global_alloc()
 {
