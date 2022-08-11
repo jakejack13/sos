@@ -8,7 +8,7 @@
 /** Size type */
 typedef unsigned int size_t;
 
-#define NULL (void *) 0;
+#define NULL (void *) 0
 
 enum bool_e {
     false = 0,
