@@ -37,17 +37,17 @@ static void global_init()
 /** Finds corresponding metadata to a given pool element */
 static struct Node *find_element(void *p)
 {
-  struct Node *element;
+  
   for (int i = 0; i < POOL_SIZE; i++)
   {
     if (metadata[i].pool_element == p)
     {
-      element = metadata + i;
-      break;
+      struct Node *element = metadata + i;
+      return element;
     }
   }
 
-  return element;
+  return NULL;
 }
 
 /** Flips a chunk of data's "used" state to the opposite */
