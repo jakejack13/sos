@@ -1,25 +1,25 @@
 #include "stdlib/stdalloc.h"
 
-#include "alloc/alloc.h"
-#include "config.h"
+#include "alloc/heapalloc.h"
 
 /** The currently used standard allocator */
-static struct allocator *allocator;
+static struct heap_state kernel_heap;
+
+struct heap_state *current_heap;
 
 void stdalloc_init() {
-    #if CONFIG_STDALLOC_HEAP 
-    allocator = heap_alloc();
-    #endif 
+    current_heap = &kernel_heap;
+    heap_init(current_heap);
 }
 
 void *malloc(size_t size) {
-    return (allocator->malloc)(size);
+    return heap_malloc(current_heap, size);
 }
 
 void *realloc(void *p, size_t size) {
-    return (allocator->realloc)(p,size);
+    return heap_realloc(current_heap, p, size);
 }
 
-int free(void *p) {
-    return (allocator->free)(p);
+bool free(void *p) {
+    return heap_free(current_heap, p);
 }

@@ -1,7 +1,12 @@
+/** Dynamic memory allocator that allocates memory from various heap pages */
+
 #ifndef _HEAPALLOC_H_
 #define _HEAPALLOC_H_
 
 #include "stdlib/stdtypes.h"
+
+/** The heap for the process currently executing */
+extern struct heap_state *current_heap;
 
 struct heap_state {
     void *page;
@@ -23,4 +28,5 @@ void *heap_realloc(struct heap_state *state, void *p, size_t size);
 
 /** Frees a chunk of memory previously allocated by malloc */
 bool heap_free(struct heap_state *state, void *p);
-#endif
+
+#endif //_HEAPALLOC_H_
