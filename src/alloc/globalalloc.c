@@ -104,7 +104,7 @@ static int global_free(void *p)
 {
   struct Node *element = find_element(p);
   if (element == NULL)
-    return NULL;
+    return 0;
   if (!element->head)
     return 0;
   else
