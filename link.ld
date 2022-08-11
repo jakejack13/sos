@@ -1,4 +1,4 @@
-PROVIDE(__pages_size = 512 * 1024 * 1024);
+PROVIDE(__pagespace_size = 512 * 1024 * 1024);
 SECTIONS
 {
     . = 0x80000;     /* Kernel load address for AArch64 */
@@ -16,9 +16,9 @@ SECTIONS
     }
     .pages (NOLOAD) : {
         . = ALIGN(16);
-        PROVIDE(__pages_start = .);
-        . = __pages_start + __pages_size;
-        __pages_end = .;
+        PROVIDE(__pagespace_start = .);
+        . = __pagespace_start + __pagespace_size;
+        __pagespace_end = .;
     }
     _end = .;
 
