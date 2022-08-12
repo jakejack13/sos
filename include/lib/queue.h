@@ -4,12 +4,13 @@
 
 #include "stdlib/stdtypes.h"
 
-/** Data structure for a generic FIFO queue */
+/** Data structure for a node */
 struct node {
     void *data;
     struct node *next;
 };
 
+/** Data structure for a generic FIFO queue */
 struct queue {
     struct node *front;
     struct node *back;
