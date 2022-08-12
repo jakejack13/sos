@@ -2,11 +2,13 @@
 #include "stdlib/stdalloc.h"
 
 void queue_init(struct queue *q){
-    
+    q->front = NULL;
+    q->back = NULL;
+    q->size=0;
 };
 
 void queue_free(struct queue *q){
-
+    
 };
 
 bool queue_empty(struct queue *q){

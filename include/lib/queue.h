@@ -5,10 +5,15 @@
 #include "stdlib/stdtypes.h"
 
 /** Data structure for a generic FIFO queue */
+struct node {
+    void *data;
+    struct node *next;
+};
+
 struct queue {
-    int front;
-    int back;
-    int size;
+    struct node *front;
+    struct node *back;
+    size_t size;
 };
 
 /** Initializes a new queue */
