@@ -14,6 +14,6 @@ void *malloc(size_t size);
 /** Resizes a chunk of memory previously allocated by malloc */
 void *realloc(void *p, size_t size);
 /** Frees a chunk of memory previous allocated by malloc */
-int free(void *p);
+bool free(void *p);
 
 #endif //_STDMEM_H_

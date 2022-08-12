@@ -24,9 +24,9 @@ _start:
     sub     w2, w2, #1
     cbnz    w2, 3b               // Loop if non-zero
 
-    // Clean heap (in case of residual bootloader symbols)
-    ldr     x1, =__heap_start   // Start address
-    ldr     w2, =__heap_size    // Size of the section
+    // Clean page space (in case of residual bootloader symbols)
+    ldr     x1, =__pagespace_start   // Start address
+    ldr     w2, =__pagespace_size    // Size of the section
 4:  cbz     w2, 5f              // Quit loop if zero
     str     xzr, [x1], #8
     sub     w2, w2, #1

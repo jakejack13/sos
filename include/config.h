@@ -3,8 +3,9 @@
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
 
+/** 1 if standard io should use UART */
 #define CONFIG_UART_IO 1
-#define CONFIG_STDALLOC_HEAP 1
+/** 1 if hello world kernel program should be used (useful for testing) */
 #define HELLO_WORLD 1
 
 #endif //_CONFIG_H_
