@@ -1,8 +1,6 @@
 #include "alloc/heapalloc.h"
 #include "alloc/pagealloc.h"
 
-#define POOL_SIZE 16 * 1024 * 1024
-
 /** Initializes the heap allocator */
 static void heap_init(struct heap_state *state)
 {
