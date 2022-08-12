@@ -21,14 +21,14 @@ static void heap_init(struct heap_state *state)
 }
 
 /** Finds corresponding metadata node to a given pool element */
-static struct Node *find_element(void *p)
+static struct Node *find_element(struct heap_state state, void *p)
 {
   struct Node *element = NULL;
-  for (int i = 0; i < POOL_SIZE; i++)
+  for (int i = 0; i < state.size; i++)
   {
-    if (metadata[i].pool_element == p)
+    if (state.metadata[i].page_element == p)
     {
-      element = metadata + i;
+      element = state.metadata + i;
       return element;
     }
   }
