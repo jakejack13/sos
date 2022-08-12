@@ -1,50 +1,32 @@
 #include "alloc/heapalloc.h"
+#include "alloc/pagealloc.h"
 
-#define POOL_SIZE 16 * 1024 * 1024
-
-/** Represents a node of metadata that maps to the corresponding element in the pool array */
-struct Node
+/** Initializes the heap allocator */
+static void heap_init(struct heap_state *state)
 {
-  /** The pointer to the corresponding element in the pool array */
-  char *pool_element;
-  /** The amount of space allocated for the appropriate chunk. Should only be used by head nodes. Default value is -1 if not a head */
-  int allocated;
-  /** The index of the corresponding element in the pool array */
-  int index;
-  /** Determines whether the current node is currently allocated or not */
-  bool used;
-  /** Determines whether the current node is the first element of a chunk of allocated memory */
-  bool head;
-};
-
-/** The pool of metadata nodes that maps to the pool array */
-static struct Node metadata[POOL_SIZE];
-
-/** The pool of memory that can be accessed by the global allocator */
-static char pool[POOL_SIZE];
-
-/** Initializes the global allocator */
-static void global_init()
-{
-  for (int i = 0; i < POOL_SIZE; i++)
-  {
-    metadata[i].pool_element = &pool[i];
+  state->page = page_alloc();
+  struct Node metadata[PAGE_SIZE];
+  for (int i = 0; i < PAGE_SIZE; i++)
+  {  
+    metadata[i].page_element = (state->page)+i;
     metadata[i].used = false;
     metadata[i].head = false;
     metadata[i].allocated = -1;
     metadata[i].index = i;
   }
+
+  state->metadata = metadata;
 }
 
-/** Finds corresponding metadata node to a given pool element */
-static struct Node *find_element(void *p)
+/** Finds corresponding metadata node to a given page element in a heap state struct */
+static struct Node *find_element(struct heap_state *state, void *p)
 {
   struct Node *element = NULL;
-  for (int i = 0; i < POOL_SIZE; i++)
+  for (int i = 0; i < PAGE_SIZE; i++)
   {
-    if (metadata[i].pool_element == p)
+    if (state.metadata[i].page_element == p)
     {
-      element = metadata + i;
+      element = state.metadata + i;
       return element;
     }
   }
@@ -65,15 +47,15 @@ static void switch_state(struct Node *element, size_t size)
   }
 }
 
-/** Finds a chunk in the pool that satisfies the size requirement. Returns the head of the chunk */
-static struct Node *find_space(size_t size)
+/** Finds a chunk in a heap state's that satisfies the size requirement. Returns the head of the chunk */
+static struct Node *find_space(struct heap_state *state, size_t size)
 {
   int counter = 0;
-  while (counter < POOL_SIZE)
+  while (counter < PAGE_SIZE)
   {
     // Check if current element is head. If so, skip counter by allocated chunk size
-    if ((metadata + counter)->head)
-      counter += (metadata + counter)->allocated;
+    if ((state.metadata + counter)->head)
+      counter += (state.metadata + counter)->allocated;
 
     // Check if chunk size is enough space
     bool fits = true;
@@ -81,7 +63,7 @@ static struct Node *find_space(size_t size)
     for (int i = 0; i < size; i++)
     {
 
-      if ((metadata + counter + i)->used)
+      if ((state.metadata + counter + i)->used)
       {
         fits = false;
         jump_size = i;
@@ -90,16 +72,16 @@ static struct Node *find_space(size_t size)
     }
 
     if (fits)
-      return (metadata + counter);
+      return (state.metadata + counter);
     counter += jump_size;
   }
   return NULL;
 }
 
 /** Frees a chunk of memory in global memory previous allocated by malloc */
-static int global_free(void *p)
+static int heap_free(struct heap_state *state, void *p)
 {
-  struct Node *element = find_element(p);
+  struct Node *element = find_element(state, p);
   if (element == NULL)
     return 0;
   if (!element->head)
@@ -113,28 +95,29 @@ static int global_free(void *p)
 }
 
 /** Allocates a chunk of memory of the given size in global memory */
-static void *global_malloc(size_t size)
+static void *heap_malloc(struct heap_state *state, size_t size)
 {
-  struct Node *head = find_space(size);
+  state->size = size;
+  struct Node *head = find_space(state, size);
   if (head == NULL)
     return NULL;
   head->allocated = size;
   head->head = true;
   switch_state(head, size);
 
-  return head->pool_element;
+  return head->page_element;
 }
 
 /** Resizes a chunk of memory in global memory previously allocated by malloc */
-static void *global_realloc(void *p, size_t size)
+static void *heap_realloc(struct heap_state *state, void *p, size_t size)
 {
-  struct Node *old_head = find_element(p);
+  struct Node *old_head = find_element(state, p);
   if (old_head == NULL || !old_head->head)
     return NULL;                      // Check for invalid pointer
   int old_size = old_head->allocated; // Save allocated size
-  global_free(p);
+  heap_free(state, p);
 
-  struct Node *head = find_space(size);
+  struct Node *head = find_space(state, size);
   if (head == NULL)
     return NULL;
   switch_state(head, size);
@@ -142,8 +125,12 @@ static void *global_realloc(void *p, size_t size)
   head->head = true;
   for (int i = 0; i < old_size; i++)
   {
-    pool[i + head->index] = pool[i + old_head->index];
+    state->page[i + head->index] = state->page[i + old_head->index];
   }
 
-  return head->pool_element;
+  return head->page_element;
+}
+
+void heap_done(struct heap_state *state) {
+  page_free(state->page);
 }
