@@ -132,3 +132,7 @@ static void *heap_realloc(struct heap_state *state, void *p, size_t size)
 
   return head->page_element;
 }
+
+void heap_done(struct heap_state *state) {
+  page_free(state->page);
+}
