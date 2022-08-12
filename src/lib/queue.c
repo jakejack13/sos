@@ -1,6 +1,14 @@
 #include "lib/queue.h"
 #include "stdlib/stdalloc.h"
 
+/** Data structure for a node */
+struct node {
+    /** The data that a node points to */
+    void *data;
+    /** A pointer to the next node in the queue */
+    struct node *next;
+};
+
 void queue_init(struct queue *q){
     q->front = NULL;
     q->back = NULL;

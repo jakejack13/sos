@@ -4,16 +4,13 @@
 
 #include "stdlib/stdtypes.h"
 
-/** Data structure for a node */
-struct node {
-    void *data;
-    struct node *next;
-};
-
 /** Data structure for a generic FIFO queue */
 struct queue {
+    /** The pointer for the first element's node */
     struct node *front;
+    /** The pointer for the last element's node */
     struct node *back;
+    /** The current number of elements within the queue */
     size_t size;
 };
 
