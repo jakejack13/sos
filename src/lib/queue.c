@@ -19,7 +19,6 @@ void queue_free(struct queue *q){
     while (q->front != NULL) {
         queue_dequeue(q);
     }
-    free(q);
 };
 
 bool queue_empty(struct queue *q){
@@ -47,6 +46,11 @@ void queue_enqueue(struct queue *q, void *elm){
 
 void *queue_dequeue(struct queue *q){
     struct node *oldnode = q->front;
+
+    if (oldnode == NULL) {
+        return NULL;
+    }
+
     if (q->front == q->back){
         q->front = NULL;
         q->back = NULL;
