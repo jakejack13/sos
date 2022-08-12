@@ -5,13 +5,31 @@
 
 #include "stdlib/stdtypes.h"
 
+/** Represents a node of metadata that maps to the corresponding element in the heap struct's pool array */
+struct Node {
+    /** The pointer to the corresponding element in the pool array */
+    char *pool_element;
+    /** The amount of space allocated for the appropriate chunk. Should only be used by head nodes. Default value is -1 if not a head */
+    int allocated;
+    /** The index of the corresponding element in the pool array */
+    int index;
+    /** Determines whether the current node is currently allocated or not */
+    bool used;
+    /** Determines whether the current node is the first element of a chunk of allocated memory */
+    bool head;
+};
+
 /** The heap for the process currently executing */
 extern struct heap_state *current_heap;
 
+/** Represents the state of a heap */
 struct heap_state {
+    /** The pointer to memory returned by the pager */
     void *page;
+    /** The size of memory allocated */
     size_t size;
-    //TODO
+    /** The pool of metadata nodes that maps to the memory allocated by the pager */
+    struct Node metadata[];
 };
 
 /** Asks the kernel for a page for allocation and initializes the allocator */

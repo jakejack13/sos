@@ -1,21 +1,7 @@
 #include "alloc/heapalloc.h"
+#include "alloc/pagealloc.h"
 
 #define POOL_SIZE 16 * 1024 * 1024
-
-/** Represents a node of metadata that maps to the corresponding element in the pool array */
-struct Node
-{
-  /** The pointer to the corresponding element in the pool array */
-  char *pool_element;
-  /** The amount of space allocated for the appropriate chunk. Should only be used by head nodes. Default value is -1 if not a head */
-  int allocated;
-  /** The index of the corresponding element in the pool array */
-  int index;
-  /** Determines whether the current node is currently allocated or not */
-  bool used;
-  /** Determines whether the current node is the first element of a chunk of allocated memory */
-  bool head;
-};
 
 /** The pool of metadata nodes that maps to the pool array */
 static struct Node metadata[POOL_SIZE];
@@ -24,7 +10,7 @@ static struct Node metadata[POOL_SIZE];
 static char pool[POOL_SIZE];
 
 /** Initializes the global allocator */
-static void global_init()
+static void heap_init(struct heap_state *state)
 {
   for (int i = 0; i < POOL_SIZE; i++)
   {
