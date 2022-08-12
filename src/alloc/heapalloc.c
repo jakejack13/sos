@@ -3,23 +3,21 @@
 
 #define POOL_SIZE 16 * 1024 * 1024
 
-/** The pool of metadata nodes that maps to the pool array */
-static struct Node metadata[POOL_SIZE];
-
-/** The pool of memory that can be accessed by the global allocator */
-static char pool[POOL_SIZE];
-
-/** Initializes the global allocator */
+/** Initializes the heap allocator */
 static void heap_init(struct heap_state *state)
 {
-  for (int i = 0; i < POOL_SIZE; i++)
-  {
-    metadata[i].pool_element = &pool[i];
+  state->page = page_alloc();
+  struct Node metadata[PAGE_SIZE];
+  for (int i = 0; i < PAGE_SIZE; i++)
+  {  
+    metadata[i].page_element = (state->page)+i;
     metadata[i].used = false;
     metadata[i].head = false;
     metadata[i].allocated = -1;
     metadata[i].index = i;
   }
+
+  state->metadata = metadata;
 }
 
 /** Finds corresponding metadata node to a given pool element */

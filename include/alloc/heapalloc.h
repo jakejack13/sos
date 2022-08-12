@@ -5,10 +5,10 @@
 
 #include "stdlib/stdtypes.h"
 
-/** Represents a node of metadata that maps to the corresponding element in the heap struct's pool array */
+/** Represents a node of metadata that maps to the corresponding element in the heap struct's memory page */
 struct Node {
-    /** The pointer to the corresponding element in the pool array */
-    char *pool_element;
+    /** The pointer to the corresponding element in the heap's memory page */
+    char *page_element;
     /** The amount of space allocated for the appropriate chunk. Should only be used by head nodes. Default value is -1 if not a head */
     int allocated;
     /** The index of the corresponding element in the pool array */
