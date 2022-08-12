@@ -53,7 +53,7 @@ static void switch_state(struct Node *element, size_t size)
 static struct Node *find_space(struct heap_state *state, size_t size)
 {
   int counter = 0;
-  while (counter < state.size)
+  while (counter < PAGE_SIZE)
   {
     // Check if current element is head. If so, skip counter by allocated chunk size
     if ((state.metadata + counter)->head)
@@ -107,19 +107,19 @@ static void *heap_malloc(struct heap_state *state, size_t size)
   head->head = true;
   switch_state(head, size);
 
-  return head->pool_element;
+  return head->page_element;
 }
 
 /** Resizes a chunk of memory in global memory previously allocated by malloc */
-static void *global_realloc(void *p, size_t size)
+static void *heap_realloc(struct heap_state *state, void *p, size_t size)
 {
-  struct Node *old_head = find_element(p);
+  struct Node *old_head = find_element(state, p);
   if (old_head == NULL || !old_head->head)
     return NULL;                      // Check for invalid pointer
   int old_size = old_head->allocated; // Save allocated size
-  global_free(p);
+  heap_free(state, p);
 
-  struct Node *head = find_space(size);
+  struct Node *head = find_space(state, size);
   if (head == NULL)
     return NULL;
   switch_state(head, size);
@@ -127,8 +127,8 @@ static void *global_realloc(void *p, size_t size)
   head->head = true;
   for (int i = 0; i < old_size; i++)
   {
-    pool[i + head->index] = pool[i + old_head->index];
+    state->page[i + head->index] = state->page[i + old_head->index];
   }
 
-  return head->pool_element;
+  return head->page_element;
 }
