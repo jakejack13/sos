@@ -6,7 +6,12 @@
 
 /** Data structure for a generic FIFO queue */
 struct queue {
-    // TODO
+    /** The pointer for the first element's node */
+    struct node *front;
+    /** The pointer for the last element's node */
+    struct node *back;
+    /** The current number of elements within the queue */
+    size_t size;
 };
 
 /** Initializes a new queue */
