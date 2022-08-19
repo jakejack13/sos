@@ -7,6 +7,7 @@
 
 int helloworld_main(int argc, char **argv) {
     prints("Hello, world!\n");
+    return EXIT_SUCCESS;
 }
 
 #endif //_HELLOWORLD_APP_C_

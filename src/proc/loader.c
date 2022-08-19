@@ -34,6 +34,8 @@ struct process *loader_spawn(struct program *p) {
     memset(&proc->heap, 0, sizeof(struct heap_state));
     heap_init(&proc->heap);
     curr_num_proc++;
+
+    return proc;
 }
 
 void loader_free(struct process *p) {
