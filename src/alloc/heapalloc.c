@@ -147,3 +147,23 @@ static void *global_realloc(void *p, size_t size)
 
   return head->pool_element;
 }
+
+
+void heap_init(struct heap_state *state) {}
+
+
+void heap_done(struct heap_state *state) {}
+
+
+void *heap_malloc(struct heap_state *state, size_t size) {
+    return NULL;
+}
+
+
+void *heap_realloc(struct heap_state *state, void *p, size_t size) {
+    return NULL;
+}
+
+bool heap_free(struct heap_state *state, void *p) {
+    return false;
+}
