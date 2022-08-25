@@ -7,3 +7,13 @@ extern char __pagespace_size; // linker symbol
 static const char *pagespace = &__pagespace_start;
 /** The length of the page space */
 static const unsigned long ps_size = (unsigned long) &__pagespace_size;
+
+void page_init() { }
+
+void *page_alloc() {
+    return NULL;
+}
+
+bool page_free(void *p) {
+    return false;
+}
