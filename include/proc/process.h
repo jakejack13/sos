@@ -21,7 +21,7 @@ struct program {
 /** Definition of a process, which is an instance of a program with a stack and heap */
 struct process {
     /** The ID of the process */
-    int pid;
+    unsigned int pid;
     /** The program that spawned this process */
     struct program *program;
     /** The start of the stack for this process */
@@ -34,6 +34,9 @@ struct process {
 
 /** Initializes the programs available on the system */
 void program_init();
+
+/** Searches for and returns the program with the given name */
+struct program *program_search(const char *name, size_t length);
 
 /** The hello world program */
 extern struct program helloworld_app;

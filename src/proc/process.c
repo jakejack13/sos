@@ -6,6 +6,10 @@ void program_init() {
 
 }
 
+struct program *program_search(const char *name, size_t length) {
+    return NULL;
+}
+
 struct program helloworld_app = {
     .name="helloworld",
     .main=helloworld_main,
