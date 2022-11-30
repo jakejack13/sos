@@ -6,7 +6,8 @@
 
 /** Data structure for a generic list */
 struct list {
-    //TODO
+    /** The initial node of the list */
+    struct node* next;
 };
 
 /** Initializes a new list */
