@@ -6,6 +6,8 @@
 #include "stdlib/stdtypes.h"
 #include "alloc/heapalloc.h"
 
+typedef unsigned int pid_t;
+
 /** Definition of a program, which are the text and data sections of an executable */
 struct program {
     /** The name of the program */
@@ -21,7 +23,7 @@ struct program {
 /** Definition of a process, which is an instance of a program with a stack and heap */
 struct process {
     /** The ID of the process */
-    unsigned int pid;
+    pid_t pid;
     /** The program that spawned this process */
     struct program *program;
     /** The start of the stack for this process */
@@ -29,7 +31,9 @@ struct process {
     /** The size of the stack for this process */
     size_t stack_size;
     /** The heap for this process */
-    struct heap_state heap;
+    struct heap_state *heap;
+    /** The pid of the process this process is waiting for, if any*/
+    pid_t waiting;
 };
 
 /** Initializes the programs available on the system */

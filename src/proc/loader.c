@@ -14,11 +14,10 @@ static unsigned int curr_num_proc = 0;
 
 /** Returns the index of an empty process or -1 if not found */
 static int find_empty_proc() {
-    if (curr_num_proc == 0) return -1;
+    if (curr_num_proc == MAX_PROCS) return -1;
     for (int i = 1; i < MAX_PROCS; i++) {
         if (processes[i].pid == 0) return i;
     }
-
     return -1;
 }
 
@@ -35,6 +34,12 @@ struct process *loader_spawn(struct program *p) {
     heap_init(&proc->heap);
     curr_num_proc++;
 
+    return proc;
+}
+
+struct process *get_process(pid_t pid) {
+    struct process *proc = &processes[pid];
+    if (proc->pid == 0) return NULL;
     return proc;
 }
 
