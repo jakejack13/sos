@@ -4,6 +4,8 @@
 
 ctx_start:
 #if defined(__x86_64__)
+    /* old_sp = x0, new_sp = x1 */
+
     addi sp,sp,-64
     sw s0,4(sp)       /* Save callee-saved registers */
     sw s1,8(sp)
@@ -22,13 +24,26 @@ ctx_start:
     mv sp,a1          /* Switch the stack */
     call ctx_entry    /* Call ctx_entry() */
 #elif defined(__aarch64__)
+    /* old_sp = x0, new_sp = x1 */
 
+    /* Save the current context */
+    mrs x0, sp_el0       // x1 = current stack pointer
+    stp x29, x30, [x0]    // save x29 and x30 (frame pointer and link register)
+    stp x19, x20, [x0, #16] // save x19 and x20
+    stp x21, x22, [x0, #32] // save x21 and x22
+    stp x23, x24, [x0, #48] // save x23 and x24
+    stp x25, x26, [x0, #64] // save x25 and x26
+    stp x27, x28, [x0, #80] // save x27 and x28
+    
+    bl ctx_entry
 #else
     #error Unsupported architecture
 #endif
 
 ctx_switch:
 #if defined(__x86_64__)
+    /* old_sp = a0, new_sp = a1 */
+    
     addi sp,sp,-64
     sw s0,4(sp)       /* Save callee-saved registers */
     sw s1,8(sp)
@@ -61,7 +76,28 @@ ctx_switch:
     addi sp,sp,64
     ret
 #elif defined(__aarch64__)
+    /* old_sp = x0, new_sp = x1 */
 
+    /* Save the current context */
+    mrs x0, sp_el0       // x0 = current stack pointer
+    stp x29, x30, [x0]    // save x29 and x30 (frame pointer and link register)
+    stp x19, x20, [x0, #16] // save x19 and x20
+    stp x21, x22, [x0, #32] // save x21 and x22
+    stp x23, x24, [x0, #48] // save x23 and x24
+    stp x25, x26, [x0, #64] // save x25 and x26
+    stp x27, x28, [x0, #80] // save x27 and x28
+
+    /* Switch to the new context */
+    ldp x19, x20, [x1, #16] // save x19 and x20
+    ldp x21, x22, [x1, #32] // save x21 and x22
+    ldp x23, x24, [x1, #48] // save x23 and x24
+    ldp x25, x26, [x1, #64] // save x25 and x26
+    ldp x27, x28, [x1, #80] // save x27 and x28
+    msr sp_el0, x1       // switch to the new stack
+    ldp x29, x30, [x1]    // load x29 and x30 (frame pointer and link register)
+
+    /* Resume execution at the saved return address */
+    ret
 #else
     #error Unsupported architecture
 #endif
