@@ -1,43 +1,81 @@
 #include "proc/scheduler.h"
+#include "proc/context.h"
 
 #include "lib/queue.h"
 #include "proc/loader.h"
 #include "stdlib/stdalloc.h"
 
 /** The kernel process */
-static struct process kernel;
+static struct process kernel_proc;
 /** The FIFO queue of runnable processes */
 static struct queue runnable;
 /** The set of processes currently waiting on another process to finish */
 static struct queue waiting;
+/** The set of processes that have already terminated */
+static struct queue terminated;
 /** The process that is currently running */
 static struct process *current;
 
 void scheduler_init() {
     queue_init(&runnable);
     queue_init(&current);
+    queue_init(&terminated);
     stdalloc_init();
     program_init();
-    kernel.pid = 0;
-    kernel.heap = current_heap;
-    current = &kernel;
+    kernel_proc.pid = 0;
+    kernel_proc.heap = current_heap;
+    current = &kernel_proc;
 }
 
-pid_t scheduler_spawn(struct program *p) {
-    struct process *proc = loader_spawn(p);
+/** Cleans up memory of the terminated processes */
+static void clean_terminated() {
+    while (!queue_empty(&terminated)) {
+        struct process *proc = queue_get(&terminated);
+        loader_free(proc);
+    }
+}
+
+/** Ends a process and generates an exit code */
+static void process_exit(int code) {
+    queue_enqueue(&terminated, current);
+    size_t num_waiting = queue_size(&waiting);
+    for (int i = 0; i < num_waiting; i++) {
+        struct process *proc = queue_dequeue(&waiting);
+        if (proc->waiting == current->pid) {
+            proc->waiting = code;
+            queue_enqueue(&runnable, proc);
+        } else {
+            queue_enqueue(&waiting, proc);
+        }
+    }
+    struct process *previous = current;
+    struct process *next = queue_get(&runnable);
+    current = next;
+    ctx_switch(&previous->sp, next->sp);
+}
+
+void ctx_entry() {
+    clean_terminated();
+    int code = (current->program->main)(current->argc, current->argv);
+    process_exit(code);
+}
+
+pid_t scheduler_spawn(struct program *p, int argv, char **argc) {
+    struct process *proc = loader_spawn(p, argv, argc);
     queue_enqueue(&runnable, current);
     current = proc;
-    ctx_switch();
+    ctx_start(&current->sp,proc->sp);
     return proc->pid;
 }
 
 unsigned int scheduler_wait(pid_t pid) {
+    struct process *temp = current;
     struct process *next = queue_dequeue(&runnable);
     if (next == NULL) return -1;
     current->waiting = pid;
     queue_enqueue(&waiting, current);
     current = next;
-    ctx_switch();
+    ctx_switch(&temp->sp,current->sp);
     unsigned int result = current->waiting;
     current->waiting = 0;
     return result;

@@ -21,7 +21,7 @@ static int find_empty_proc() {
     return -1;
 }
 
-struct process *loader_spawn(struct program *p) {
+struct process *loader_spawn(struct program *p, int argc, char **argv) {
     int pid = find_empty_proc();
     if (pid == -1) return NULL;
 
@@ -30,6 +30,9 @@ struct process *loader_spawn(struct program *p) {
     proc->program = p;
     proc->stack_start = page_alloc() + PAGE_SIZE;
     proc->stack_size = PAGE_SIZE;
+    proc->sp = proc->stack_start;
+    proc->argc = argc;
+    proc->argv = argv;
     memset(&proc->heap, 0, sizeof(struct heap_state));
     heap_init(&proc->heap);
     curr_num_proc++;
