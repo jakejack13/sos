@@ -1,4 +1,3 @@
-#include "proc/context.h"
 
     .section .text
     .global ctx_start, ctx_switch

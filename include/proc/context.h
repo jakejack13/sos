@@ -16,6 +16,6 @@ extern void ctx_switch(void **old_sp, void *new_sp);
 extern void ctx_start(void **old_sp, void *new_sp);
 
 /** Begins running a new process */
-void ctx_entry(void);
+void ctx_entry();
 
 #endif //_CONTEXT_H_

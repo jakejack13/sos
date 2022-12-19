@@ -34,7 +34,7 @@ struct process *loader_spawn(struct program *p, int argc, char **argv) {
     proc->argc = argc;
     proc->argv = argv;
     memset(&proc->heap, 0, sizeof(struct heap_state));
-    heap_init(&proc->heap);
+    heap_init(proc->heap);
     curr_num_proc++;
 
     return proc;
@@ -47,7 +47,7 @@ struct process *get_process(pid_t pid) {
 }
 
 void loader_free(struct process *p) {
-    heap_done(&p->heap);
+    heap_done(p->heap);
     page_free(p->stack_start - PAGE_SIZE);
     p->pid = 0;
     curr_num_proc--;

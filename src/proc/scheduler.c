@@ -18,7 +18,7 @@ static struct process *current;
 
 void scheduler_init() {
     queue_init(&runnable);
-    queue_init(&current);
+    queue_init(&waiting);
     queue_init(&terminated);
     stdalloc_init();
     program_init();
@@ -30,7 +30,7 @@ void scheduler_init() {
 /** Cleans up memory of the terminated processes */
 static void clean_terminated() {
     while (!queue_empty(&terminated)) {
-        struct process *proc = queue_get(&terminated);
+        struct process *proc = queue_dequeue(&terminated);
         loader_free(proc);
     }
 }
@@ -49,7 +49,7 @@ static void process_exit(int code) {
         }
     }
     struct process *previous = current;
-    struct process *next = queue_get(&runnable);
+    struct process *next = queue_dequeue(&runnable);
     current = next;
     ctx_switch(&previous->sp, next->sp);
 }
