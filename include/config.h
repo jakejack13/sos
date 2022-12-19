@@ -9,5 +9,7 @@
 #define HELLO_WORLD 0
 /** 1 if the main shell program should be used */
 #define SHELL 1
+/** The size of the pagespace requested from the host operating system in userspace mode */
+#define USER_PAGESPACE_SIZE 1024 * 1024 * 512
 
 #endif //_CONFIG_H_

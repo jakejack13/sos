@@ -1,14 +1,28 @@
 #include "alloc/pagealloc.h"
 
+#include "config.h"
+
 extern char __pagespace_start; // linker symbol
 extern char __pagespace_size; // linker symbol
 
 /** The pointer to the start of the page space, the pages section of memory where all pages are allocated from */
-static const char *pagespace = &__pagespace_start;
+static char *pagespace;
 /** The length of the page space */
-static const unsigned long ps_size = (unsigned long) &__pagespace_size;
+static unsigned long ps_size;
 
-void page_init() { }
+#ifdef USER
+#include <stdlib.h>
+#endif
+
+void page_init() {
+    #ifdef USER
+    ps_size = USER_PAGESPACE_SIZE;
+    pagespace = malloc(USER_PAGESPACE_SIZE);
+    #else
+    pagespace = &__pagespace_start;
+    ps_size = (unsigned long) &__pagespace_size;
+    #endif
+}
 
 void *page_alloc() {
     return NULL;

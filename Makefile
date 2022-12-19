@@ -9,11 +9,13 @@ kernel: CPPFLAGS = -Iinclude
 kernel: LDFLAGS = -m aarch64elf -nostdlib -T link.ld --strip-all
 kernel: clean kernel8.img
 
+user: LLVMPATH = /usr/bin/
 user: CLANGFLAGS = -Wall -O2 --sysroot=/usr/local/
 user: CPPFLAGS = -Iinclude -D USER=1
 user: LDFLAGS = -L /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib
 user: clean $(COFILES) $(AOFILES)
-	ld $(LDFLAGS) $(COFILES) $(AOFILES)
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib
+	$(LLVMPATH)clang -o kernel.bin $(LDFLAGS) $(COFILES) $(AOFILES)
 
 */*/%.ao: src/*/%.S include/*/*.h
 	$(LLVMPATH)clang $(CLANGFLAGS) $(CPPFLAGS) -c $< -o $@
