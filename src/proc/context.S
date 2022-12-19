@@ -3,6 +3,7 @@
     .global ctx_start, ctx_switch
 
 ctx_start:
+#ifdef __x86_64__
     addi sp,sp,-64
     sw s0,4(sp)       /* Save callee-saved registers */
     sw s1,8(sp)
@@ -20,8 +21,16 @@ ctx_start:
     sw sp,0(a0)       /* Save the current stack pointer */
     mv sp,a1          /* Switch the stack */
     call ctx_entry    /* Call ctx_entry() */
+#elif defined(__arm__)
+
+#elif defined(__aarch_64__)
+
+#else
+    #error Unsupported architecture
+#endif
 
 ctx_switch:
+#if defined(__x86_64__)
     addi sp,sp,-64
     sw s0,4(sp)       /* Save callee-saved registers */
     sw s1,8(sp)
@@ -53,3 +62,10 @@ ctx_switch:
     lw ra,52(sp)      /* Restore return address */
     addi sp,sp,64
     ret
+#elif defined(__arm__)
+
+#elif defined(__aarch_64__)
+
+#else
+    #error Unsupported architecture
+#endif
