@@ -8,7 +8,9 @@
 static struct iostream *iostream;
 
 void stdio_init() {
-    #if CONFIG_UART_IO
+    #ifdef USER
+    iostream = glibc_iostream();
+    #elif CONFIG_UART_IO
     iostream = uart_iostream();
     #endif
     (iostream->init)();
@@ -22,7 +24,7 @@ void printc(char c) {
     (iostream->printc)(c);
 }
 
-void gets(char *buffer, unsigned int length) {
+void gets(char *buffer, size_t length) {
     (iostream->gets)(buffer, length);
 }
 

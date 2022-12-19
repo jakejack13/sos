@@ -1,8 +1,15 @@
-
+#ifdef USER
+    .global _ctx_start, _ctx_switch
+#else
     .section .text
     .global ctx_start, ctx_switch
+#endif
 
+#ifdef USER
+_ctx_start:
+#else
 ctx_start:
+#endif
 #if defined(__x86_64__)
     /* old_sp = x0, new_sp = x1 */
 
@@ -35,12 +42,20 @@ ctx_start:
     stp x25, x26, [x0, #64] // save x25 and x26
     stp x27, x28, [x0, #80] // save x27 and x28
     
+    #ifdef USER
+    bl _ctx_entry
+    #else
     bl ctx_entry
+    #endif
 #else
     #error Unsupported architecture
 #endif
 
+#ifdef USER
+_ctx_switch:
+#else
 ctx_switch:
+#endif
 #if defined(__x86_64__)
     /* old_sp = a0, new_sp = a1 */
     

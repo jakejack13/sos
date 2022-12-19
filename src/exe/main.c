@@ -5,6 +5,7 @@
 #include "io/framebuffer.h"
 #include "proc/scheduler.h"
 #include "stdlib/stdalloc.h"
+#include "proc/shell.h"
 
 /** Initializes all necessary modules */
 void init() {
@@ -14,7 +15,7 @@ void init() {
     scheduler_init();
 }
 
-void main() {
+int main() {
     init();
 #if SHELL
     shell_main();
