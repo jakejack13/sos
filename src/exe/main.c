@@ -16,16 +16,16 @@ void init() {
 
 void main() {
     init();
-    #if SHELL
+#if SHELL
     shell_main();
-    #elif HELLO_WORLD
+#elif HELLO_WORLD
     fb_init();
     fb_paint_screen(BLACK);
     fb_draw_string(100,100,"Hello, world!", default_font);
-    #else
+#else
     prints("Hello, world!\n");
     while (1) {
         printc(getc());
     }
-    #endif
+#endif
 }
