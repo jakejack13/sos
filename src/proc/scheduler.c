@@ -20,8 +20,6 @@ void scheduler_init() {
     queue_init(&runnable);
     queue_init(&waiting);
     queue_init(&terminated);
-    stdalloc_init();
-    program_init();
     kernel_proc.pid = 0;
     kernel_proc.heap = current_heap;
     current = &kernel_proc;
