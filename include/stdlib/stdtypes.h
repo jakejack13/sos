@@ -5,10 +5,13 @@
 #ifndef _STDTYPES_H_
 #define _STDTYPES_H_
 
+#ifndef USER
 /** Size type */
 typedef unsigned int size_t;
-
 #define NULL (void *) 0
+#else
+#include <stddef.h>
+#endif
 
 enum bool_e {
     false = 0,

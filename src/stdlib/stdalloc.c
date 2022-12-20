@@ -1,15 +1,12 @@
 #include "stdlib/stdalloc.h"
 
 #include "alloc/heapalloc.h"
-
-/** The heap state for the kernel heap */
-static struct heap_state kernel_heap;
+#include "alloc/pagealloc.h"
 
 struct heap_state *current_heap;
 
 void stdalloc_init() {
-    current_heap = &kernel_heap;
-    heap_init(current_heap);
+    page_init();
 }
 
 void *malloc(size_t size) {
