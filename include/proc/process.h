@@ -37,7 +37,7 @@ struct process {
     /** The stack pointer */
     void *sp;
     /** The heap for this process */
-    struct heap_state *heap;
+    struct heap_state heap;
     /** The pid of the process this process is waiting for, if any*/
     pid_t waiting;
 };
