@@ -65,7 +65,7 @@ char uart_readbyte() {
     return (char) mmio_read(AUX_MU_IO_REG);
 }
 
-void uart_readstring(char *buffer, unsigned int size) {
+void uart_readstring(char *buffer, size_t size) {
     char c;
     for (unsigned int i = 0; i < size; i++) {
         c = uart_readbyte();

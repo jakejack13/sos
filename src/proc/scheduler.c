@@ -4,6 +4,7 @@
 #include "lib/queue.h"
 #include "proc/loader.h"
 #include "stdlib/stdalloc.h"
+#include "alloc/heapalloc.h"
 
 /** The kernel process */
 static struct process kernel_proc;
@@ -49,6 +50,7 @@ static void process_exit(int code) {
     struct process *previous = current;
     struct process *next = queue_dequeue(&runnable);
     current = next;
+    current_heap = current->heap;
     ctx_switch(&previous->sp, next->sp);
 }
 
@@ -62,6 +64,7 @@ pid_t scheduler_spawn(struct program *p, int argv, char **argc) {
     struct process *proc = loader_spawn(p, argv, argc);
     queue_enqueue(&runnable, current);
     current = proc;
+    current_heap = current->heap;
     ctx_start(&current->sp,proc->sp);
     return proc->pid;
 }
@@ -73,6 +76,7 @@ unsigned int scheduler_wait(pid_t pid) {
     current->waiting = pid;
     queue_enqueue(&waiting, current);
     current = next;
+    current_heap = current->heap;
     ctx_switch(&temp->sp,current->sp);
     unsigned int result = current->waiting;
     current->waiting = 0;

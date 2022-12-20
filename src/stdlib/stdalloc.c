@@ -1,6 +1,7 @@
 #include "stdlib/stdalloc.h"
 
 #include "alloc/heapalloc.h"
+#include "alloc/pagealloc.h"
 
 /** The heap state for the kernel heap */
 static struct heap_state kernel_heap;
@@ -8,6 +9,7 @@ static struct heap_state kernel_heap;
 struct heap_state *current_heap;
 
 void stdalloc_init() {
+    page_init();
     current_heap = &kernel_heap;
     heap_init(current_heap);
 }
