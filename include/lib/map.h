@@ -12,26 +12,26 @@ struct entry {
 
 struct map {
     struct entry *table;
-    uint64_t used;
-    uint64_t size;
+    size_t used;
+    size_t size;
 };
 
 /** Initializes a new hashmap. Returns `-1` if not allocated. */
-int map_init(struct map *m, uint64_t size);
+int map_init(struct map *m, size_t size);
 
 /** Frees the hashtable from memory. */
 void map_free(struct map *m);
 
 /** Adds the key/value pair to the hashtable. */
-int map_put(struct map *m, void *key, void *value, uint64_t size);
+int map_put(struct map *m, void *key, void *value, size_t size);
 
 /** Gets the value associated with the specified key. */
-void *map_get(struct map *m, void *key, uint64_t size);
+void *map_get(struct map *m, void *key, size_t size);
 
 /** Checks if key exists in hashmap. */
-bool map_contains(struct map *m, void *key, uint64_t size);
+bool map_contains(struct map *m, void *key, size_t size);
 
 /** Hash function for strings. */
-uint64_t fnv_1a(char *str);
+size_t fnv_1a(char *str);
 
 #endif //_MAP_H_
