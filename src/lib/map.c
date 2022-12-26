@@ -23,3 +23,15 @@ void map_put(struct map* m, void* key, void* value) {
 void* map_get(struct map* m, void* key) {
 	return m->table[fnv_1a(key) % m->size].value;
 }
+
+uint64_t fnv_1a(char *str) {
+    size_t len = strlen(str);
+    uint64_t hash = 0xCBF29CE484222325;
+
+    for (size_t i = len; i--;) {
+        hash ^= str[i];
+        hash *= 0x00000100000001B3;
+    }
+
+    return hash;
+}
