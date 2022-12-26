@@ -7,7 +7,7 @@
 /** Data structure for a generic list */
 struct list {
     /** The initial node of the list */
-    struct node* next;
+    struct node *head;
 };
 
 /** Initializes a new list */

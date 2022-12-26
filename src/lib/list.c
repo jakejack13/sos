@@ -2,43 +2,43 @@
 #include "stdlib/stdalloc.h" // malloc, free
 #include "stdlib/stdtypes.h" // bool
 
-/** Structure of a node */
+/* *Structure of a node */
 struct node {
-    /** The data that a node points to */
-    void* data;
-    /** A pointer to the next node in the list */
-    struct node* next;
+    /* *The data that a node points to */
+    void *data;
+    /* *A pointer to the next node in the list */
+    struct node *next;
 };
 
-void list_init(struct list* l) {
-    l->next = NULL;
+void list_init(struct list *l) {
+    l->head = NULL;
 }
 
-void list_free(struct list* l) {
-    struct node* n = l->next;
+void list_free(struct list *l) {
+    struct node *n = l->head;
     while (n) {
-        struct node* next = n->next;
+        struct node *next = n->next;
         free(n);
         n = next;
     }
 }
 
-void list_add(struct list* l, void* elm) {
-    struct node* n = malloc(sizeof(struct node));
+void list_add(struct list *l, void *elm) {
+    struct node *n = malloc(sizeof(struct node));
     n->data = elm;
-    n->next = l->next;
-    l->next = n;
+    n->next = l->head;
+    l->head = n;
 }
 
-void list_remove(struct list* l, void* elm) {
-    struct node* n = l->next;
-    struct node* prev = NULL;
+void list_remove(struct list *l, void *elm) {
+    struct node *n = l->head;
+    struct node *prev = NULL;
     while (n) {
         if (n->data == elm) {
             if (prev) {
                 prev->next = n->next;
             } else {
-                l->next = n->next;
+                l->head = n->next;
             }
             free(n);
             return;
@@ -48,19 +48,18 @@ void list_remove(struct list* l, void* elm) {
     }
 }
 
-void list_clear(struct list* l) {
-    struct node* n = l->next;
+void list_clear(struct list *l) {
+    struct node *n = l->head;
     while (n) {
-        struct node* next = n->next;
-        free(n->data);
+        struct node *next = n->next;
         free(n);
         n = next;
     }
-    l->next = NULL;
+    l->head = NULL;
 }
 
-bool list_contains(struct list* l, void* elm) {
-    struct node* n = l->next;
+bool list_contains(struct list *l, void *elm) {
+    struct node *n = l->head;
     while (n) {
         if (n->data == elm) {
             return true;
@@ -70,9 +69,9 @@ bool list_contains(struct list* l, void* elm) {
     return false;
 }
 
-size_t list_size(struct list* l) {
+size_t list_size(struct list *l) {
     size_t size = 0;
-    struct node* n = l->next;
+    struct node *n = l->head;
     while (n) {
         size++;
         n = n->next;
@@ -80,8 +79,8 @@ size_t list_size(struct list* l) {
     return size;
 }
 
-void list_to_array(struct list* l, void **buffer, size_t size) {
-    struct node* n = l->next;
+void list_to_array(struct list *l, void **buffer, size_t size) {
+    struct node *n = l->head;
     size_t i = 0;
     while (n && i < size) {
         buffer[i++] = n->data;
