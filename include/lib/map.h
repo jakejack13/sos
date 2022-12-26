@@ -6,12 +6,12 @@
 
 /** Structures for a generic map. */
 struct entry {
-    void* key;
-    void* value;
+    void *key;
+    void *value;
 };
 
 struct map {
-    struct entry* table;
+    struct entry *table;
     uint64_t used;
     uint64_t size;
 };
@@ -23,10 +23,13 @@ int map_init(struct map *m, uint64_t size);
 void map_free(struct map *m);
 
 /** Adds the key/value pair to the hashtable. */
-void map_put(struct map *m, void *key, void *value);
+int map_put(struct map *m, void *key, void *value, uint64_t size);
 
-/** Gets the value associated with the specified key. Returns NULL if it doesn't exist. */
-void *map_get(struct map *m, void *key);
+/** Gets the value associated with the specified key. */
+void *map_get(struct map *m, void *key, uint64_t size);
+
+/** Checks if key exists in hashmap. */
+bool map_contains(struct map *m, void *key, uint64_t size);
 
 /** Hash function for strings. */
 uint64_t fnv_1a(char *str);
