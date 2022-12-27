@@ -12,7 +12,7 @@ size_t fnv_1a(char *ptr, size_t size) {
 }
 
 int map_init(struct map *m, size_t size) {
-	m->table = calloc(size, sizeof(struct map));
+	m->table = calloc(size, sizeof(struct entry));
 	m->size = size;
 
 	/** Ensure map was allocated. */
