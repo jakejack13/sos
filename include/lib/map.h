@@ -6,13 +6,18 @@
 
 /** Structures for a generic map. */
 struct entry {
+    /** The key associated with the entry. */
     void *key;
+    /** The value associated with the entry. */
     void *value;
 };
 
 struct map {
+    /** Table which holds all entries. */
     struct entry *table;
+    /** Amount of space used. */
     size_t used;
+    /** Maximum space to allocate for entries */
     size_t size;
 };
 
