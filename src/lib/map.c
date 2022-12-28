@@ -28,12 +28,11 @@ int map_put(struct map *m, void *key, void *value, size_t size) {
 	size_t idx = fnv_1a(key, size) % m->size;
 	size_t start = idx;
 
-	if (m->table[idx].key != NULL) {
-		while (1) {
-			idx = (++idx) % m->size;
-			if (idx == start) return -1;
-			if (m->table[idx].key == NULL || memcmp(key, m->table[idx].key, size) == 0) break;
-		}
+	
+	while (m->table[idx].key != NULL) {
+		idx = (++idx) % m->size;
+		if (idx == start) return -1;
+		if (memcmp(key, m->table[idx].key, size) == 0) break;
 	}
 
 	m->table[idx].key = key;
