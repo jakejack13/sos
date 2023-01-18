@@ -16,10 +16,6 @@ void map_init(struct map *m) {
 
 	m->table = calloc(size, sizeof(struct entry));
 	m->size = size;
-
-	/** Ensure map was allocated. */
-	if (m->table == NULL) return NULL;
-	else return 0;
 }
 
 void map_free(struct map *m) {
