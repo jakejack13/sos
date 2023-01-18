@@ -7,6 +7,8 @@
 
 /** Size type */
 typedef unsigned int size_t;
+/** Unsigned 64 bit integer */
+typedef unsigned long long uint64_t;
 
 #define NULL (void *) 0
 
