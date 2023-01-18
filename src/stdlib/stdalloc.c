@@ -1,4 +1,5 @@
 #include "stdlib/stdalloc.h"
+#include "stdlib/stdstr.h"
 
 #include "alloc/heapalloc.h"
 
