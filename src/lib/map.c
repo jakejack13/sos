@@ -1,22 +1,24 @@
 #include "lib/map.h"
+#include "stdlib/stdhash.h"
+#include "stdlib/stdalloc.h"
 
-size_t fnv_1a(char *ptr, size_t size) {
-    size_t hash = 0x811C9DC5;
+/** Structures for a generic map. */
+struct entry {
+    /** The key associated with the entry. */
+    void *key;
+    /** The value associated with the entry. */
+    void *value;
+};
 
-    for (;size--;) {
-        hash ^= ptr[size];
-        hash *= 0x01000193;
-    }
+void map_init(struct map *m) {
+	/** Default 1MB of data. */
+	size_t size = 1024 * 1024;
 
-    return hash;
-}
-
-int map_init(struct map *m, size_t size) {
 	m->table = calloc(size, sizeof(struct entry));
 	m->size = size;
 
 	/** Ensure map was allocated. */
-	if (m->table == NULL) return -1;
+	if (m->table == NULL) return NULL;
 	else return 0;
 }
 
@@ -24,14 +26,14 @@ void map_free(struct map *m) {
 	free(m->table);
 }
 
-int map_put(struct map *m, void *key, void *value, size_t size) {
+void map_put(struct map *m, void *key, void *value, size_t size) {
 	size_t idx = fnv_1a(key, size) % m->size;
 	size_t start = idx;
 
 	
 	while (m->table[idx].key != NULL) {
 		idx = (++idx) % m->size;
-		if (idx == start) return -1;
+		if (idx == start) return NULL;
 		if (memcmp(key, m->table[idx].key, size) == 0) break;
 	}
 
