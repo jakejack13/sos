@@ -4,6 +4,8 @@
 *.co
 # Image files
 *.img
+# Binary files
+kernel.bin
 # Elf files
 *.elf
 # Build directory
