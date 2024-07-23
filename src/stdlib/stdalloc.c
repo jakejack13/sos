@@ -1,4 +1,5 @@
 #include "stdlib/stdalloc.h"
+#include "stdlib/stdstr.h"
 
 #include "alloc/heapalloc.h"
 #include "alloc/pagealloc.h"
@@ -11,6 +12,15 @@ void stdalloc_init() {
 
 void *malloc(size_t size) {
     return heap_malloc(current_heap, size);
+}
+
+void *calloc(size_t _NumOfElements, size_t _SizeOfElements) { 
+    void* buffer = malloc(_NumOfElements * _SizeOfElements);
+    
+    if (buffer == NULL) return NULL;
+
+    memset(buffer, 0, _NumOfElements * _SizeOfElements);
+    return buffer;
 }
 
 void *realloc(void *p, size_t size) {
